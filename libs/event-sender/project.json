@@ -1,0 +1,34 @@
+{
+  "root": "libs/event-sender",
+  "sourceRoot": "libs/event-sender/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/event-sender",
+        "tsConfig": "libs/event-sender/tsconfig.lib.json",
+        "packageJson": "libs/event-sender/package.json",
+        "main": "libs/event-sender/src/index.ts",
+        "assets": ["libs/event-sender/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/event-sender/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/event-sender"],
+      "options": {
+        "jestConfig": "libs/event-sender/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

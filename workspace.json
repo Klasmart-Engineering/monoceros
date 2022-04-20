@@ -1,4 +1,7 @@
 {
   "version": 2,
-  "projects": {}
+  "projects": {
+    "config": "libs/config",
+    "event-sender": "libs/event-sender"
+  }
 }

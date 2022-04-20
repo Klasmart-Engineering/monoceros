@@ -1,23 +1,30 @@
 {
-  "extends": "@nrwl/workspace/presets/core.json",
-  "npmScope": "monoceros",
   "affected": {
     "defaultBase": "main"
   },
   "cli": {
     "defaultCollection": "@nrwl/workspace"
   },
+  "extends": "@nrwl/workspace/presets/core.json",
+  "npmScope": "monoceros",
+  "targetDependencies": {
+    "build": [
+      {
+        "projects": "dependencies",
+        "target": "build"
+      }
+    ]
+  },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ]
-      }
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      },
+      "runner": "nx/tasks-runners/default"
     }
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
   }
 }
