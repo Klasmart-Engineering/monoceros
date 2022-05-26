@@ -49,13 +49,13 @@ jobs:
         # run post-install scripts without NODE_AUTH_TOKEN
         run: npm rebuild && npm run prepare --if-present
 
-      - name: nx workspace
-        run: |
-          npx nx workspace-lint
-        env:
-          NX_VERBOSE_LOGGING: true
-          NX_PERF_LOGGING: true
-          NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
+      # - name: nx workspace
+      #   run: |
+      #     npx nx workspace-lint
+      #   env:
+      #     NX_VERBOSE_LOGGING: true
+      #     NX_PERF_LOGGING: true
+      #     NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
 
       - name: nx format-check
         run: |
