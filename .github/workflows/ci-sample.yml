@@ -49,6 +49,9 @@ jobs:
         # run post-install scripts without NODE_AUTH_TOKEN
         run: npm rebuild && npm run prepare --if-present
 
+      - name: Nx clear cache
+        run: |
+          npx nx clear-cache
       # - name: nx workspace
       #   run: |
       #     npx nx workspace-lint
