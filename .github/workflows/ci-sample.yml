@@ -53,7 +53,11 @@ jobs:
         run: |
           npx nx workspace-lint
           npx nx format:check
-          npx nx affected --base ${{ github.base_ref }} --target lint --parallel 3
+          npx nx affected --target lint --parallel 3 --all
+        env:
+          NX_VERBOSE_LOGGING: true
+          NX_PERF_LOGGING: true
+          NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
 
       - name: NX test affected
         run: |
