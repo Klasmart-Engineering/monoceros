@@ -67,6 +67,7 @@ jobs:
           NX_VERBOSE_LOGGING: true
           NX_PERF_LOGGING: true
           NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
+          GIT_CHECKOUT: 'false'
 
       - name: NX lint
         run: |
