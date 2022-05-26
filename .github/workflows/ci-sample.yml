@@ -52,16 +52,17 @@ jobs:
       - name: Nx clear cache
         run: |
           npx nx clear-cache
-      # - name: nx workspace
-      #   run: |
-      #     npx nx workspace-lint
-      #   env:
-      #     NX_VERBOSE_LOGGING: true
-      #     NX_PERF_LOGGING: true
-      #     NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
+      - name: nx workspace
+        run: |
+          npx nx affected --target lint --parallel 3 --all
+        env:
+          NX_VERBOSE_LOGGING: true
+          NX_PERF_LOGGING: true
+          NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
 
       - name: nx format-check
         run: |
+          npx nx workspace-lint
           npx nx format:check
         env:
           NX_VERBOSE_LOGGING: true
