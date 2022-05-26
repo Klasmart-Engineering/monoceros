@@ -68,15 +68,15 @@ jobs:
           NX_PERF_LOGGING: true
           NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
 
-      - name: nx format-check
-        run: |
-          npx nx workspace-lint
-          npx nx format:check
-        env:
-          NX_VERBOSE_LOGGING: true
-          NX_PERF_LOGGING: true
-          NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
-          GIT_CHECKOUT: 'false'
+      # - name: nx format-check
+      #   run: |
+      #     npx nx workspace-lint
+      #     npx nx format:check
+      #   env:
+      #     NX_VERBOSE_LOGGING: true
+      #     NX_PERF_LOGGING: true
+      #     NX_TASKS_RUNNER_DYNAMIC_OUTPUT: false
+      #     GIT_CHECKOUT: 'false'
 
       - name: NX lint
         run: |
