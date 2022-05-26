@@ -53,7 +53,7 @@ jobs:
         run: |
           npx nx workspace-lint
           npx nx format:check
-          npx nx affected --target lint --parallel 3
+          npx nx affected --base ${{ github.base_ref }} --target lint --parallel 3
 
       - name: NX test affected
         run: |
