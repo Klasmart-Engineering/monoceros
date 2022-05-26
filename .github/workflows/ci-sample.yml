@@ -26,6 +26,7 @@ jobs:
         uses: nrwl/nx-set-shas@v2
         with:
           main-branch-name: ${{ github.base_ref }}
+          set-environment-variables-for-job: 'true'
 
       - uses: actions/setup-node@v3
         with:
@@ -38,16 +39,14 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # Skip post-install scripts, to protect NODE_AUTH_TOKEN from 3rd parties
         run: npm ci --ignore-scripts
-      
+
       - name: Dependencies post install steps
         # run post-install scripts without NODE_AUTH_TOKEN
         run: npm rebuild && npm run prepare --if-present
-      
+
       - name: NX lint
         run: |
-          npx nx workspace-lint
-          npx nx format:check
-          npx nx affected --target lint --parallel 3
+          npx nx affected --target lint --parallel 3 --all
 
       - name: NX test affected
         run: |
