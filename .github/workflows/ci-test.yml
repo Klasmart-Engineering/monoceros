@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - next
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Needed for nrwl/nx-set-shas
+
+      - name: NX config # set env vars for 'nx affected'
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: ${{ github.base_ref }}
+          set-environment-variables-for-job: 'true'
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Skip post-install scripts, to protect NODE_AUTH_TOKEN from 3rd parties
+        run: npm ci --ignore-scripts
+
+      - name: Dependencies post install steps
+        # run post-install scripts without NODE_AUTH_TOKEN
+        run: npm rebuild && npm run prepare --if-present
+
+      - name: NX lint
+        run: |
+          npx nx affected --target lint --parallel 3
+
+      - name: NX test affected
+        run: |
+          npx nx affected --target test --parallel 3 --ci --code-coverage
+
+      - name: NX build affected
+        run: |
+          npx nx affected --target build --parallel 3
+
+      - name: Release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npx nx affected --target release

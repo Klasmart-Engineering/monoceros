@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "root": "libs/event-sender",
   "sourceRoot": "libs/event-sender/src",
   "projectType": "library",
@@ -12,6 +13,14 @@
         "packageJson": "libs/event-sender/package.json",
         "main": "libs/event-sender/src/index.ts",
         "assets": ["libs/event-sender/*.md"]
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "semantic-release --extends ./libs/event-sender/release.config.js",
+        "parallel": false
       }
     },
     "lint": {

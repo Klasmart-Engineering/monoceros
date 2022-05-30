@@ -1,4 +1,13 @@
 {
-  "name": "@monoceros/event-sender",
-  "version": "0.0.1"
+  "name": "@kl-engineering/event-sender",
+  "version": "0.0.0-semantic-release",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "github:KL-Engineering/monoceros",
+    "directory": "libs/event-sender"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
 }
