@@ -14,6 +14,14 @@
         "assets": ["libs/config/*.md"]
       }
     },
+    "release": {
+      "executor": "nx:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "semantic-release --extends ./libs/config/release.config.js",
+        "parallel": false
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
