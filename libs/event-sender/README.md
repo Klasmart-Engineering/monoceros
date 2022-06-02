@@ -1,4 +1,5 @@
 # event-sender
+Sends events to various destinations such as kinesis, firehose, elasticsearch and dynamoDb
 
 This library was generated with [Nx](https://nx.dev).
 
