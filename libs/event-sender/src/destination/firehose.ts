@@ -1,5 +1,5 @@
 import { FirehoseClient, FirehoseClientConfig, PutRecordBatchCommand, PutRecordBatchResponseEntry, _Record } from '@aws-sdk/client-firehose'
-import { getConfigUrl } from '@monoceros/config';
+import { getConfigUrl } from '@kl-engineering/config';
 import { EventDestination, EventError } from '../eventSender'
 
 export class FirehoseEventDestination<Event> implements EventDestination<Event> {

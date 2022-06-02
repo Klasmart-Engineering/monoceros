@@ -1,5 +1,5 @@
 import { KinesisClient, KinesisClientConfig, PutRecordsCommand, PutRecordsRequestEntry, PutRecordsResultEntry } from '@aws-sdk/client-kinesis'
-import { getConfigUrl } from '@monoceros/config'
+import { getConfigUrl } from '@kl-engineering/config'
 import { EventDestination, EventError } from '../eventSender'
 
 export class KinesisEventDestination<Event> implements EventDestination<Event> {

@@ -35,8 +35,8 @@
     "noPropertyAccessFromIndexSignature": true,  /* Require undeclared properties from index signatures to use element accesses. */
 
     "paths": {
-      "@monoceros/config": ["libs/config/src/index.ts"],
-      "@monoceros/event-sender": ["libs/event-sender/src/index.ts"]
+      "@kl-engineering/config": ["libs/config/src/index.ts"],
+      "@kl-engineering/event-sender": ["libs/event-sender/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

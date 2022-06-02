@@ -1,6 +1,6 @@
 import { DynamoDB, DynamoDBClientConfig } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, BatchWriteCommand, BatchWriteCommandInput } from "@aws-sdk/lib-dynamodb";
-import { getConfigUrl } from '@monoceros/config'
+import { getConfigUrl } from '@kl-engineering/config'
 import { EventDestination } from '../eventSender'
 
 export class DynamoDbEventDestination<Event> implements EventDestination<Event> {

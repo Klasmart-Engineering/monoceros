@@ -6,7 +6,7 @@
     "defaultCollection": "@nrwl/workspace"
   },
   "extends": "@nrwl/workspace/presets/core.json",
-  "npmScope": "monoceros",
+  "npmScope": "kl-engineering",
   "targetDependencies": {
     "build": [
       {

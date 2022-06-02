@@ -1,4 +1,4 @@
-import { getConfigString, getConfigUrl } from '@monoceros/config'
+import { getConfigString, getConfigUrl } from '@kl-engineering/config'
 import { Client, ClientOptions } from '@elastic/elasticsearch'
 import { BulkOperationType, BulkResponseItem, ErrorCause } from '@elastic/elasticsearch/lib/api/types';
 import { EventDestination, EventError } from '../eventSender'
