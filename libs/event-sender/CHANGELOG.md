@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/KL-Engineering/monoceros/compare/event-sender-v1.0.3...event-sender-v1.0.4) (2022-06-03)
+
+
+### Bug Fixes
+
+* bump config version ([04322f2](https://github.com/KL-Engineering/monoceros/commit/04322f26cee68570bb3f882ce010bccfe8c2414e))
+
 ## [1.0.3](https://github.com/KL-Engineering/monoceros/compare/event-sender-v1.0.2...event-sender-v1.0.3) (2022-06-03)
 
 
