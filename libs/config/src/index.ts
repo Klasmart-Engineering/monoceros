@@ -27,3 +27,4 @@ export const getConfigUrl = <T = undefined>(
     if(defaultValue !== undefined) { log(`Configuration(${variableName}): using default value '${defaultValue}'`); }
     return defaultValue;
 }
+
