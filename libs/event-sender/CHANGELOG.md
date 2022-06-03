@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/KL-Engineering/monoceros/compare/event-sender-v1.0.1...event-sender-v1.0.2) (2022-06-03)
+
+
+### Bug Fixes
+
+* update package.json ([44c698c](https://github.com/KL-Engineering/monoceros/commit/44c698c18a81172d3898afeb0bb7052089c6963e))
+
 ## [1.0.1](https://github.com/KL-Engineering/monoceros/compare/event-sender-v1.0.0...event-sender-v1.0.1) (2022-06-02)
 
 
