@@ -1,6 +1,9 @@
 {
   "version": 2,
   "projects": {
+    "chat-backend": "apps/chat-backend",
+    "chat-frontend": "apps/chat-frontend",
+    "chat-protocol": "libs/chat-protocol",
     "config": "libs/config",
     "event-sender": "libs/event-sender"
   }
