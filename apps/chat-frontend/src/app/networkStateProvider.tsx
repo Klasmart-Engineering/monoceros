@@ -9,7 +9,7 @@ import { ReactiveWrapper } from "./reactiveWrapper";
  */
 class NetworkState {
     public chatMessages = new ReactiveWrapper<string[]>([]);
-    public networkState = new ReactiveWrapper<ConnectionState>("not-connected");
+    public connectionState = new ReactiveWrapper<ConnectionState>("not-connected");
 
     private websocket?: KeepAliveWebSocket
     private failedConnectionCount = 0;
@@ -136,6 +136,6 @@ export const useSendMessage = () => {
 }
 
 export const useMessages = () => useContext(NetworkContext).chatMessages.useValue();
-export const useConection = () => useContext(NetworkContext).networkState.useValue();
+export const useConectionState = () => useContext(NetworkContext).connectionState.useValue();
 
 export default NetworkProvider;
