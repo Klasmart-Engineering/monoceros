@@ -16,7 +16,6 @@
         "polyfills": "apps/chat-frontend/src/polyfills.ts",
         "tsConfig": "apps/chat-frontend/tsconfig.app.json",
         "assets": [
-          "apps/chat-frontend/src/favicon.ico",
           "apps/chat-frontend/src/assets"
         ],
         "styles": ["apps/chat-frontend/src/styles.css"],
