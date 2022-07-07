@@ -1,3 +1,4 @@
+import { ChatMessage, ChatRequest, ChatResponse } from "@kl-engineering/chat-protocol";
 import React, { FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo } from "react";
 import { ConnectionState, KeepAliveWebSocket } from "./KeepAliveWebSocket";
 import { ReactiveWrapper } from "./reactiveWrapper";
@@ -8,7 +9,7 @@ import { ReactiveWrapper } from "./reactiveWrapper";
  * process incoming network messages for state replication
  */
 class NetworkState {
-    public chatMessages = new ReactiveWrapper<string[]>([]);
+    public chatMessages = new ReactiveWrapper<ChatMessage[]>([]);
     public connectionState = new ReactiveWrapper<ConnectionState>("not-connected");
 
     private websocket?: KeepAliveWebSocket
@@ -27,7 +28,7 @@ class NetworkState {
         this.reconnect();
     }
 
-    public send(message: string): boolean {
+    public send(message: ChatRequest): boolean {
         if(!this.websocket) { this.websocket = this.createWebsocket(); }
         if(!this.websocket) { return false; }
         const data = JSON.stringify(message);
@@ -102,14 +103,18 @@ class NetworkState {
         try {
             if(typeof data !== "string") { return; }
             const message = JSON.parse(data);
-            this.handleMessage(message)
+            if(typeof message !== "object") { return; }
+            this.handleMessage(message as ChatResponse)
         } catch(e) {
             console.log(e)
         }
     }
 
-    private handleMessage(message: string) {
-        this.chatMessages.mutate(messages => messages.push(message))
+    private handleMessage(response: ChatResponse) {
+        if(response.chatMessage) {
+            const message = response.chatMessage
+            this.chatMessages.mutate(messages => messages.push(message))
+        }
     }
 }
 
@@ -132,7 +137,7 @@ export const NetworkProvider: FC<PropsWithChildren<{url?: string}>> = (props) =>
 
 export const useSendMessage = () => {
     const ctx = useContext(NetworkContext);
-    return useCallback((message: string) => ctx.send(message), [ctx])
+    return useCallback((message: string) => ctx.send({sendMessage: { contents: message }}), [ctx])
 }
 
 export const useMessages = () => useContext(NetworkContext).chatMessages.useValue();

@@ -1,3 +1,4 @@
+import { ChatResponse } from "@kl-engineering/chat-protocol";
 import { WebSocketServer } from "ws";
 import { Client } from "./client";
 
@@ -21,10 +22,11 @@ export class ChatServer {
         console.log(this.wss.address())
     }
 
-    public broadcast(message: string, except?: Client) {
+    public broadcast(response: ChatResponse, except?: Client) {
+        const data = JSON.stringify(response)
         for(const client of this.clients) {
             if(client === except) { continue; }
-            client.send(message)
+            client.send(data)
         }
     }
 }

@@ -8,7 +8,7 @@ export const Chat = () => {
     return (
         <>
             <div />
-            {messages.map(m => <div>{m}</div>)}
+            {messages.map(m => <div>{new Date(m.timestamp).toLocaleTimeString()} {m.name}: {m.message}</div>)}
             <br/>
             <input
                 onChange={e => setValue(e.target.value)}

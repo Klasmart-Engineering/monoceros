@@ -1,6 +1,7 @@
 import { WebSocket } from "ws";
 import { KeepAliveWebSocket } from "./KeepAliveWebSocket";
 import { ChatServer } from "./chatServer";
+import { ChatMessage, ChatRequest } from "@kl-engineering/chat-protocol";
 
 export class Client {
     private static nextId = 0;
@@ -16,9 +17,7 @@ export class Client {
         this.websocket.on("message", m => this.onMessage(m))
     }
 
-    public send(message: string) {
-        console.log(`sending to client(${this.clientId})`, message)
-        const data = JSON.stringify(message);
+    public send(data: string) {
         return this.websocket.send(data);
     }
 
@@ -26,17 +25,22 @@ export class Client {
         try {
             if(typeof data !== "string") { return; }
             const message = JSON.parse(data);
-            if(typeof message !== "string") { return; }
+            if(typeof message !== "object") { return; }
             this.handleMessage(message);
         } catch(e) {
             console.log(e)
         }
     }
 
-    private handleMessage(message: string) {
-        console.log('message', message)
-
-        this.server.broadcast(message)
+    private handleMessage(request: ChatRequest) {
+        if(request.sendMessage) {
+            const chatMessage: ChatMessage = {
+                timestamp: Date.now(),
+                message: request.sendMessage.contents,
+                name: `Client(${this.clientId})`
+            }
+            this.server.broadcast({chatMessage})
+        }
     }
 
 }
