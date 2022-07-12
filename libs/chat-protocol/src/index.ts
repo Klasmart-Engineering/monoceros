@@ -1,2 +1,3 @@
-export * from './clientToServer';
-export * from './serverToClient';
+export * from './server';
+export * from './client';
+export * from './chatRpc'

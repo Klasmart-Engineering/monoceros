@@ -1,7 +1,7 @@
 import { WebSocket } from "ws";
 import { KeepAliveWebSocket } from "./KeepAliveWebSocket";
 import { ChatServer } from "./chatServer";
-import { ChatMessage, ChatRequest } from "@kl-engineering/chat-protocol";
+import { ChatClientMessage, ChatMessage, ChatProcedureNames, ChatProcedures, ChatServerMessage } from "@kl-engineering/chat-protocol";
 
 export class Client {
     private static nextId = 0;
@@ -17,14 +17,19 @@ export class Client {
         this.websocket.on("message", m => this.onMessage(m))
     }
 
-    public send(data: string) {
+    public sendMessage(message: ChatServerMessage) {
+        const data = JSON.stringify(message);
+        this.send(data);
+    }
+
+    public send(data: string | Blob | ArrayBufferLike | ArrayBufferView) {
         return this.websocket.send(data);
     }
 
     private onMessage(data: string | ArrayBuffer | Blob) {
         try {
             if(typeof data !== "string") { return; }
-            const message = JSON.parse(data);
+            const message: ChatClientMessage<ChatProcedureNames> = JSON.parse(data);
             if(typeof message !== "object") { return; }
             this.handleMessage(message);
         } catch(e) {
@@ -32,15 +37,34 @@ export class Client {
         }
     }
 
-    private handleMessage(request: ChatRequest) {
-        if(request.sendMessage) {
+    private handleMessage<P extends ChatProcedureNames>({id, procedure, request}: ChatClientMessage<P>) {
+        try {
+            const response = this.procedures[procedure](request);
+            this.sendMessage({ rpc: { id, response } })
+        } catch(e) {
+            this.sendMessage({ rpc: { id, error: `${e}` } })
+        }
+
+    }
+
+    private procedures: ChatProcedures = {
+        getUsers: async () => {
+            throw new Error("Not Implemented")
+        },
+        setName: async () => {
+            throw new Error("Not Implemented")
+        },
+        sendMessage: async (request) => {
             const chatMessage: ChatMessage = {
                 timestamp: Date.now(),
-                message: request.sendMessage.contents,
+                message: request.contents,
                 name: `Client(${this.clientId})`
             }
             this.server.broadcast({chatMessage})
-        }
+            return {}
+        },
     }
+
+
 
 }

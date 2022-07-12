@@ -1,6 +1,7 @@
-import { ChatMessage, ChatRequest, ChatResponse } from "@kl-engineering/chat-protocol";
+import { ChatClientMessage, ChatMessage, ChatProcedureNames, ChatRpc, ChatServerMessage } from "@kl-engineering/chat-protocol";
 import React, { FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo } from "react";
 import { ConnectionState, KeepAliveWebSocket } from "./KeepAliveWebSocket";
+import { PromiseCompleterMap } from "./promiseCompleter";
 import { ReactiveWrapper } from "./reactiveWrapper";
 
 
@@ -11,11 +12,13 @@ import { ReactiveWrapper } from "./reactiveWrapper";
 class NetworkState {
     public chatMessages = new ReactiveWrapper<ChatMessage[]>([]);
     public connectionState = new ReactiveWrapper<ConnectionState>("not-connected");
-
+    
     private websocket?: KeepAliveWebSocket
     private failedConnectionCount = 0;
     private reconnectTimeout?: ReturnType<typeof setTimeout>
-
+    
+    private pendingRequests = new PromiseCompleterMap();
+    
     public constructor(
         private readonly url = new URL("ws://localhost:3000/"),
         private mayConnect = true,
@@ -28,17 +31,26 @@ class NetworkState {
         this.reconnect();
     }
 
-    public send(message: ChatRequest): boolean {
-        if(!this.websocket) { this.websocket = this.createWebsocket(); }
-        if(!this.websocket) { return false; }
-        const data = JSON.stringify(message);
-        return this.websocket.send(data);
+    public async rpc<P extends ChatProcedureNames>(
+        procedure: P,
+        request: ChatRpc<P>["Request"],
+    ): Promise<ChatRpc<P>["Response"]> {
+        return this.pendingRequests.createPromise<ChatRpc<P>["Request"]>(
+            id => this.send({id, procedure, request})
+        );
     }
 
     public close() {
         this.mayConnect = false;
         this.destroyWebsocket();
         console.log('close', this.websocket, this.websocket?.state())
+    }
+
+    private send(message: ChatClientMessage<ChatProcedureNames>): boolean {
+        if(!this.websocket) { this.websocket = this.createWebsocket(); }
+        if(!this.websocket) { return false; }
+        const data = JSON.stringify(message);
+        return this.websocket.send(data);
     }
 
     private handleNetworkStateChange(state: ConnectionState) {
@@ -102,19 +114,28 @@ class NetworkState {
     private onMessage(data: string | ArrayBuffer | Blob) {
         try {
             if(typeof data !== "string") { return; }
-            const message = JSON.parse(data);
+            const message: ChatServerMessage = JSON.parse(data);
             if(typeof message !== "object") { return; }
-            this.handleMessage(message as ChatResponse)
+            if('rpc' in message) { this.handleRpcResponse(message.rpc); }
+            if('chatMessage' in message) { this.handleChatMessage(message.chatMessage); }
         } catch(e) {
             console.log(e)
         }
     }
 
-    private handleMessage(response: ChatResponse) {
-        if(response.chatMessage) {
-            const message = response.chatMessage
-            this.chatMessages.mutate(messages => messages.push(message))
+    private handleRpcResponse(response: ChatRpc<ChatProcedureNames>["RpcResponse"]) {
+        const id = response.id;
+        if('error' in response) {
+            this.pendingRequests.reject(id, response.error);
+        } else if('response' in response) {
+            this.pendingRequests.resolve(id, response.response);
+        } else {
+            this.pendingRequests.reject(id, 'Empty Response');
         }
+    }
+
+    private handleChatMessage(chatMessage: ChatMessage) {
+        this.chatMessages.mutate(messages => messages.push(chatMessage))
     }
 }
 
@@ -137,7 +158,7 @@ export const NetworkProvider: FC<PropsWithChildren<{url?: string}>> = (props) =>
 
 export const useSendMessage = () => {
     const ctx = useContext(NetworkContext);
-    return useCallback((message: string) => ctx.send({sendMessage: { contents: message }}), [ctx])
+    return useCallback((message: string) => ctx.rpc("sendMessage", { contents: message }), [ctx]);
 }
 
 export const useMessages = () => useContext(NetworkContext).chatMessages.useValue();
