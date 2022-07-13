@@ -17,7 +17,7 @@ export type RpcRequest<
   P extends keyof RpcMap
 > = {
   id: number;
-  procedure: P;
+  procedureName: P;
   request: Request<RpcMap, P>;
 };
 

@@ -32,11 +32,11 @@ class NetworkState {
     }
 
     public async rpc<P extends ChatProcedureNames>(
-        procedure: P,
+        procedureName: P,
         request: ChatRpc<P>["Request"],
     ): Promise<ChatRpc<P>["Response"]> {
         return this.pendingRequests.createPromise<ChatRpc<P>["Request"]>(
-            id => this.send({id, procedure, request})
+            id => this.send({id, procedureName, request})
         );
     }
 
@@ -130,7 +130,7 @@ class NetworkState {
         } else if('response' in response) {
             this.pendingRequests.resolve(id, response.response);
         } else {
-            this.pendingRequests.reject(id, 'Empty Response');
+            this.pendingRequests.reject(id, 'Malformed Response');
         }
     }
 
@@ -154,6 +154,11 @@ export const NetworkProvider: FC<PropsWithChildren<{url?: string}>> = (props) =>
             {props.children}
         </NetworkContext.Provider>
     );
+}
+
+export const useSetName = () => {
+    const ctx = useContext(NetworkContext);
+    return useCallback((name: string) => ctx.rpc("setName", { name }), [ctx]);
 }
 
 export const useSendMessage = () => {

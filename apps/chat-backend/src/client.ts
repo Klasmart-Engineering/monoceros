@@ -37,9 +37,9 @@ export class Client {
         }
     }
 
-    private handleMessage<P extends ChatProcedureNames>({id, procedure, request}: ChatClientMessage<P>) {
+    private handleMessage<P extends ChatProcedureNames>({id, procedureName, request}: ChatClientMessage<P>) {
         try {
-            const response = this.procedures[procedure](request);
+            const response = this.procedures[procedureName](request);
             this.sendMessage({ rpc: { id, response } })
         } catch(e) {
             this.sendMessage({ rpc: { id, error: `${e}` } })

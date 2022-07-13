@@ -22,17 +22,3 @@ export type ChatProcedureRequestResponseMap = {
   setName: [SetNameRequest, SetNameResponse];
   sendMessage: [SendMessageRequest, SendMessageResponse];
 };
-
-// export type ChatProcedureNames = keyof ChatProcedureRequestResponseMap;
-
-// export type ChatProcedures = { [P in ChatProcedureNames]: ChatProcedure<P> };
-
-// export type ChatProcedure<P extends ChatProcedureNames> = (
-//   request: ChatRequest<P>
-// ) => ChatResponse<P>;
-
-// export type ChatRequest<P extends ChatProcedureNames> =
-//   ChatProcedureRequestResponseMap[P][0];
-
-// export type ChatResponse<P extends ChatProcedureNames> =
-//   ChatProcedureRequestResponseMap[P][1];

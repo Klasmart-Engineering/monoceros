@@ -1,6 +1,5 @@
 import { ChatProcedureNames, ChatRpc } from './chatRpc';
 
-/* eslint-disable @typescript-eslint/ban-types */
 export type ChatServerMessage = 
     | { rpc: ChatRpc<ChatProcedureNames>["RpcResponse"]; }
     | { chatMessage: ChatMessage; };
