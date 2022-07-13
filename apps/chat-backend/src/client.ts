@@ -7,7 +7,9 @@ export class Client {
     private static nextId = 0;
     
     public readonly clientId = Client.nextId++;
+    
     private websocket: KeepAliveWebSocket;
+    private name = `Client(${this.clientId})`;
 
     public constructor(
         private server: ChatServer,
@@ -51,14 +53,14 @@ export class Client {
         getUsers: async () => {
             throw new Error("Not Implemented")
         },
-        setName: async () => {
-            throw new Error("Not Implemented")
+        setName: async ({name}) => {
+            this.name = name; 
         },
         sendMessage: async (request) => {
             const chatMessage: ChatMessage = {
                 timestamp: Date.now(),
                 message: request.contents,
-                name: `Client(${this.clientId})`
+                name: this.name,
             }
             this.server.broadcast({chatMessage})
             return {}
