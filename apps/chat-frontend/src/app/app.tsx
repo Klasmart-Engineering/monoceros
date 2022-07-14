@@ -3,7 +3,7 @@ import NetworkProvider from './networkStateProvider';
 
 export function App() {
   return (
-    <NetworkProvider>
+    <NetworkProvider url={new URL("ws://localhost:8080")}>
       <Chat />
     </NetworkProvider>
   );

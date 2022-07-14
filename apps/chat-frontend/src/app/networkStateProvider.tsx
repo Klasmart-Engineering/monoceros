@@ -142,8 +142,8 @@ class NetworkState {
 export const NetworkContext = React.createContext<NetworkState>(null as never);
 NetworkContext.displayName = "NetworkContext";
 
-export const NetworkProvider: FC<PropsWithChildren<{url?: string}>> = (props) => {
-    const state = useMemo(() => new NetworkState(), [])
+export const NetworkProvider: FC<PropsWithChildren<{url?: URL}>> = (props) => {
+    const state = useMemo(() => new NetworkState(props.url), [props.url])
     useEffect(() => {
         state.connect();
         return () => state.close()
