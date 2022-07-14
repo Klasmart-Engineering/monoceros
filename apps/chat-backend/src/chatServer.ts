@@ -1,11 +1,12 @@
-import { ChatMessage, ChatServerMessage } from "@kl-engineering/chat-protocol";
+import { ChatServerMessage } from "@kl-engineering/chat-protocol";
 import { WebSocketServer } from "ws";
 import { Client } from "./client";
+import { SharedState } from "./sharedSate";
 
 export class ChatServer {
     private wss: WebSocketServer
     private clients = new Set<Client>()
-    private chatHistory: ChatMessage[] = []
+    public sharedState = new SharedState(r => this.broadcast(r))
 
     public constructor(port: number) {
         this.wss = new WebSocketServer({
@@ -13,7 +14,7 @@ export class ChatServer {
         });
         this.wss.on("connection", (ws, req) => {
             const client = new Client(this, ws)
-            this.chatHistory.forEach(chatMessage => client.sendMessage({chatMessage}))
+            this.sharedState.chatHistory.forEach(chatMessage => client.sendMessage({chatMessage}))
             this.clients.add(client)
             ws.on("close", () => {
                 this.clients.delete(client)
@@ -22,11 +23,6 @@ export class ChatServer {
             console.log(`Client(${client.clientId}) connected from ${JSON.stringify(req.socket.address())}, (${this.clients.size} clients connected)`)
         });
         console.log(this.wss.address())
-    }
-
-    public broadcastChatMessage(chatMessage: ChatMessage) {
-        this.chatHistory.push(chatMessage)
-        return this.broadcast({chatMessage})
     }
 
     public broadcast(response: ChatServerMessage, except?: Client) {

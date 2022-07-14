@@ -62,7 +62,7 @@ export class Client {
                 message: request.contents,
                 name: this.name,
             }
-            this.server.broadcastChatMessage(chatMessage)
+            this.server.sharedState.broadcastChatMessage(chatMessage)
             return {}
         },
     }
