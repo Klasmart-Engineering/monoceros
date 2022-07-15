@@ -22,18 +22,14 @@ export class SharedState {
     }
 
     public async getHistory() {
-        const redis = this.redis.duplicate()
-        try {
-            const [,newChatMessages] = await readStreamJson<ChatMessage>(redis)
-            return newChatMessages
-        } finally {
-            redis.disconnect()
-        }
+        return this.useRedis(async redis => {
+            const [,chatMessages] = await readStreamJson<ChatMessage>(redis)
+            return chatMessages
+        })
     }
 
     private async subscibe() {
-        const redis = this.redis.duplicate()
-        try {
+        this.useRedis(async redis => {
             let lastMessageId = "0";
             // eslint-disable-next-line no-constant-condition
             while(true) {
@@ -43,11 +39,20 @@ export class SharedState {
                 newChatMessages.forEach(chatMessage => this.broadcast({chatMessage}))
                 lastMessageId = newestMessageId;
             }
+        })
+    }
+
+    private async useRedis<T = unknown>(callback: (redis: Redis) => T): Promise<T> {
+        const duplicate = this.redis.duplicate()
+        try {
+            return callback(duplicate);
         } finally {
-            redis.disconnect()
+            duplicate.disconnect();
         }
     }
 }
+
+
 
 async function readStreamJson<T>(redis: Redis, lastMessageId = "0") {
     let newestMessageId = lastMessageId;
