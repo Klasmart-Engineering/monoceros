@@ -12,9 +12,10 @@ export class ChatServer {
         this.wss = new WebSocketServer({
             port,
         });
-        this.wss.on("connection", (ws, req) => {
+        this.wss.on("connection", async (ws, req) => {
             const client = new Client(this, ws)
-            this.sharedState.chatHistory.forEach(chatMessage => client.sendMessage({chatMessage}))
+            const history = await this.sharedState.getHistory()
+            history.forEach(chatMessage => client.sendMessage({chatMessage}))
             this.clients.add(client)
             ws.on("close", () => {
                 this.clients.delete(client)
